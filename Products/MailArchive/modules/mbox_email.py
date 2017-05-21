@@ -29,7 +29,7 @@ from os.path import join
 from email.Utils import parseaddr, parsedate, getaddresses
 from email.Header import decode_header
 
-from cleanhtml import HTMLCleaner
+from .cleanhtml import HTMLCleaner
 from Products.MailArchive.Utils import Utils
 
 charset_table = {
@@ -44,9 +44,9 @@ def to_unicode(s, encoding):
     if encoding:
         encoding = encoding.lower()
         charset  = charset_table.get(encoding, encoding)
-        return unicode(s, charset, 'replace')
+        return str(s, charset, 'replace')
     else:
-        return unicode(s, 'ascii', 'replace')
+        return str(s, 'ascii', 'replace')
 
 
 def extractUrl(msg):
@@ -135,7 +135,7 @@ class mbox_email(Utils):
         return to_entities_quote(data)
 
     def getSubjectEx(self):
-        return decode_string(self._msg.get('subject', u''))
+        return decode_string(self._msg.get('subject', ''))
 
     def getDateTime(self):
         return parsedate(self._msg.get('date', None))
@@ -163,7 +163,7 @@ class mbox_email(Utils):
                     charset = "Latin-1"
                 charset = charset.lower()
                 charset = charset_table.get(charset, charset)
-                p = unicode(p, charset)
+                p = str(p, charset)
                 if ct_type == 'text/html':
                     mycleaner = HTMLCleaner()
                     try:
@@ -196,7 +196,7 @@ class mbox_email(Utils):
                     # We cannot know the character set, so return decoded "something"
                     p = part.get_payload(decode=True)
                 else:
-                    p = unicode(p, str(charset), 'ignore')
+                    p = str(p, str(charset), 'ignore')
                     if ct_type == 'text/html':
                         mycleaner = HTMLCleaner()
                         try:
@@ -209,9 +209,9 @@ class mbox_email(Utils):
                         p = p.replace('\n', '<br />')
                         p = p.replace('\r', '')
                         p =  extractUrl(p)
-                        p = u'''<div style="font-family: 'Courier New', monospace; white-space: pre-wrap">%s</div>''' % p
+                        p = '''<div style="font-family: 'Courier New', monospace; white-space: pre-wrap">%s</div>''' % p
                 payloads.append(p)
-                return u''.join(payloads)
+                return ''.join(payloads)
 
     def getAttachments(self):
         atts = []

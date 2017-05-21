@@ -25,8 +25,8 @@ import sys
 import os.path
 import re
 
-from mbox_email import mbox_email
-from mbox_filters import mbox_filters
+from .mbox_email import mbox_email
+from .mbox_filters import mbox_filters
 from Products.MailArchive.Utils import Utils
 
 SPAM = 0
@@ -68,7 +68,7 @@ class mbox(mbox_filters, Utils):
         #open a MBOX file and process all its content
         self.cache = {}
         mb = mailbox.PortableUnixMailbox (open(self.path,'rb'))
-        msg = mb.next()
+        msg = next(mb)
         starting, ending = None, None
         while msg is not None:
             document = msg.fp.read()
@@ -95,7 +95,7 @@ class mbox(mbox_filters, Utils):
                     if ending is None: ending = d
                     else:
                         if d > ending: ending = d
-                msg = mb.next()
+                msg = next(mb)
         self.starting, self.ending = starting, ending
         mb = None
 
@@ -128,7 +128,7 @@ class mbox(mbox_filters, Utils):
     def __get_mbox_thread(self, msgs, node, depth):
         tree = []
         l = [msg for msg in msgs if msg[7] == node]
-        map(msgs.remove, l)
+        list(map(msgs.remove, l))
         for msg in l:
             tree.append((depth, msg))
             tree.extend(self.__get_mbox_thread(msgs, msg[6], depth+1))
@@ -143,22 +143,22 @@ class mbox(mbox_filters, Utils):
 
     def get_mbox_msgs(self):
         #returns the list of messages
-        return self.cache.values()
+        return list(self.cache.values())
 
     def count_mbox_msgs(self):
         #returns the number of messages
-        return len(self.cache.keys())
+        return len(list(self.cache.keys()))
 
     def sort_mbox_msgs(self, n, r):
         #returns a sorted list of messages
-        t = [(x[n], x) for x in self.cache.values()]
+        t = [(x[n], x) for x in list(self.cache.values())]
         t.sort()
         if r: t.reverse()
         return [val for (key, val) in t]
 
     def sort_mbox_msgs_ci(self, n, r):
         #returns a sorted list of messages - sort without case-sensitivity
-        t = [(x[n].lower(), x) for x in self.cache.values()]
+        t = [(x[n].lower(), x) for x in list(self.cache.values())]
         t.sort()
         if r: t.reverse()
         return [val for (key, val) in t]
@@ -211,7 +211,7 @@ class mbox_imap(mbox):
             s = m.getSubjectEx()
             (result, reason) = self.run_rules(s)
             if result:
-                if s == '' or s == u'': s = u'(no subject)'
+                if s == '' or s == '': s = '(no subject)'
                 from_addr = m.getFrom()
                 f = from_addr[0]
                 if not f: f = from_addr[1]
@@ -238,8 +238,8 @@ class mbox_imap(mbox):
 
 def main():
     b = mbox(sys.argv[1])
-    print b.cache
-    print b.sort_mbox_msgs(3)
+    print(b.cache)
+    print(b.sort_mbox_msgs(3))
 
 if __name__ == '__main__':
     main ()

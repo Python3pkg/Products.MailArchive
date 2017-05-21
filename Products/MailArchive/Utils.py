@@ -25,7 +25,7 @@ import time
 from random import choice
 from os.path import join, getmtime, isdir, isfile, getsize
 from os import listdir
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from Products.PythonScripts.standard import url_quote, html_quote
 
 from Products.PythonScripts.standard import html_quote
@@ -71,7 +71,7 @@ class Utils(object):
         elif value == '':
             return []
         else:
-            return filter(lambda x:x!='', value.split('\r\n'))
+            return [x for x in value.split('\r\n') if x!='']
 
     def list_to_lines(self, values):
         """Takes a list of values and returns a value for a textarea control"""
@@ -84,7 +84,7 @@ class Utils(object):
     def remove_duplicates(self, l):
         d = {}
         [ d.setdefault(i,None) for i in l ]
-        return d.keys()
+        return list(d.keys())
 
     #We don't really care about the download of the mailboxes.
     #The mbox format is little used outside the Unix community.
@@ -108,7 +108,7 @@ class Utils(object):
 
     def antispam(self, addr):
         """ All email adresses will be obfuscated. """
-        buf = map(None, addr)
+        buf = list(addr)
         for i in range(0, len(addr), choice((2,3,4))):
             buf[i] = '&#%d;' % ord(buf[i])
         return '<a href="mailto:%s">%s</a>' % (''.join(buf), ''.join(buf))
@@ -178,37 +178,37 @@ class Utils(object):
 
     def toUtf8(self, s):
         #convert to utf-8
-        if isinstance(s, unicode): return s.encode('utf-8')
+        if isinstance(s, str): return s.encode('utf-8')
         else: return str(s)
 
     def toUnicode(self, s):
         #convert to unicode
-        if not isinstance(s, unicode): return unicode(s, 'utf-8')
+        if not isinstance(s, str): return str(s, 'utf-8')
         else: return s
 
     def toUnicodeEx(self, s):
         #convert to unicode
-        if isinstance(s, unicode): return s
+        if isinstance(s, str): return s
         else:
             try:
-                return unicode(s, 'utf-8')
+                return str(s, 'utf-8')
             except:
                 try:
-                    return unicode(s, 'latin-1')
+                    return str(s, 'latin-1')
                 except:
                     return s
 
     def urlQuote(self, value):
         #escapes single characters
-        return urllib.quote(value)
+        return urllib.parse.quote(value)
 
     def urlUnquote(self, value):
         #transform escapes in single characters
-        return urllib.unquote(value)
+        return urllib.parse.unquote(value)
 
     def cleanupMboxId(self, id=''):
         #clean up an id given by the user
-        if isinstance(id, unicode): x = id.encode('utf-8')
+        if isinstance(id, str): x = id.encode('utf-8')
         else: x = str(id)
         x = x.strip(' -')
         x = x.translate(TRANSMAP)

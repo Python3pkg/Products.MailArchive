@@ -1,6 +1,6 @@
 import os, sys
 if __name__ == '__main__':
-    execfile(os.path.join(sys.path[0], 'framework.py'))
+    exec(compile(open(os.path.join(sys.path[0], 'framework.py')).read(), os.path.join(sys.path[0], 'framework.py'), 'exec'))
     
 from Testing import ZopeTestCase
 import email
@@ -22,15 +22,15 @@ class Test_MboxEmail(ZopeTestCase.ZopeTestCase):
         
     def test_get_to(self):
         msg = mbox_email(self.open_msg('msg1.txt'))
-        self.assertEqual(msg.getTo(), [(u'John Doe', 'john.doe@fns.ro')])
+        self.assertEqual(msg.getTo(), [('John Doe', 'john.doe@fns.ro')])
         
     def test_get_to_with_encoding(self):
         msg = mbox_email(self.open_msg('msg2.txt'))
-        self.assertEqual(msg.getTo(), [(u'Tim Terleg&#229;rd', 'timte878@student.se')])
+        self.assertEqual(msg.getTo(), [('Tim Terleg&#229;rd', 'timte878@student.se')])
 
     def test_get_multiple_to(self):
         msg = mbox_email(self.open_msg('msg3.txt'))
-        self.assertEqual(msg.getTo(), [(u'te Kelrg', 'Je.Kelrg@ee.int'), (u'NFP', 'eiofp@roleeion.int'), (u'Ulri tark', 'stk@sa.sk'), (u'Schnder J&#252;rn', 'juen.schder@umweltamt.at')])
+        self.assertEqual(msg.getTo(), [('te Kelrg', 'Je.Kelrg@ee.int'), ('NFP', 'eiofp@roleeion.int'), ('Ulri tark', 'stk@sa.sk'), ('Schnder J&#252;rn', 'juen.schder@umweltamt.at')])
 
     def test_get_to_with_wrong_encoding(self):
         msg = mbox_email(self.open_msg('msg4.txt'))
@@ -38,11 +38,11 @@ class Test_MboxEmail(ZopeTestCase.ZopeTestCase):
 
     def test_get_from(self):
         msg = mbox_email(self.open_msg('msg1.txt'))
-        self.assertEqual(msg.getFrom(), (u'Smith', 'john@fns.ro'))
+        self.assertEqual(msg.getFrom(), ('Smith', 'john@fns.ro'))
 
     def test_get_from_with_encoding(self):
         msg = mbox_email(self.open_msg('msg2.txt'))
-        self.assertEqual(msg.getFrom(), (u'Geir B&#230;kholt', 'lists@elvww.com'))
+        self.assertEqual(msg.getFrom(), ('Geir B&#230;kholt', 'lists@elvww.com'))
 
     def test_get_from_with_wrong_encoding(self):
         msg = mbox_email(self.open_msg('msg4.txt'))
@@ -50,11 +50,11 @@ class Test_MboxEmail(ZopeTestCase.ZopeTestCase):
 
     def test_get_subject(self):
         msg = mbox_email(self.open_msg('msg1.txt'))
-        self.assertEqual(msg.getSubject(), u'Re: test email')
+        self.assertEqual(msg.getSubject(), 'Re: test email')
     
     def test_get_subject_with_encoding(self):
         msg = mbox_email(self.open_msg('msg2.txt'))
-        self.assertEqual(msg.getSubject(), u'[Zope] FYI:Portall&#246;sungen f&#252;r den Bildungsbereich /  Zope Tagung (German)')
+        self.assertEqual(msg.getSubject(), '[Zope] FYI:Portall&#246;sungen f&#252;r den Bildungsbereich /  Zope Tagung (German)')
 
     def test_get_subject_with_wrong_encoding(self):
         msg = mbox_email(self.open_msg('msg4.txt'))
@@ -70,11 +70,11 @@ class Test_MboxEmail(ZopeTestCase.ZopeTestCase):
 
     def test_get_multiple_cc(self):
         msg = mbox_email(self.open_msg('msg3.txt'))
-        self.assertEqual(msg.getCC(), [(u'te Kelrg', 'Je.Kelrg@ee.int'), (u'NFP', 'eiofp@roleeion.int'), (u'Ulri tark', 'stk@sa.sk'), (u'Schnder J&#252;rn', 'juen.schder@umweltamt.at')])
+        self.assertEqual(msg.getCC(), [('te Kelrg', 'Je.Kelrg@ee.int'), ('NFP', 'eiofp@roleeion.int'), ('Ulri tark', 'stk@sa.sk'), ('Schnder J&#252;rn', 'juen.schder@umweltamt.at')])
 
     def test_get_cc_with_encoding(self):
         msg = mbox_email(self.open_msg('msg2.txt'))
-        self.assertEqual(msg.getCC(), [(u'Aur&#233;lien Camp&#233;as', 'aure.aa@wanoo.fr')])
+        self.assertEqual(msg.getCC(), [('Aur&#233;lien Camp&#233;as', 'aure.aa@wanoo.fr')])
 
     def test_get_cc_with_wrong_encoding(self):
         msg = mbox_email(self.open_msg('msg4.txt'))

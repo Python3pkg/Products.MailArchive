@@ -30,15 +30,15 @@ from AccessControl.Permissions import view_management_screens, view
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 #Product imports
-from modules.mbox import mbox, mbox_imap
-from modules.mbox_email import mbox_email
+from .modules.mbox import mbox, mbox_imap
+from .modules.mbox_email import mbox_email
 
 _marker = []
 
 def addMailArchive(self, id='', title='', path='', REQUEST=None):
     """ """
     ob = MailArchive(id, title, path)
-    if len(ob.cache.keys()) > 0:
+    if len(list(ob.cache.keys())) > 0:
         self._setObject(id, ob)
     if REQUEST:
         return self.manage_main(self, REQUEST, update_menu=1)
@@ -159,7 +159,7 @@ InitializeClass(MailArchive)
 def addMailArchiveIMAP(self, imap_client_ob, id='', title='', mailbox_name='', REQUEST=None):
     """ """
     ob = MailArchiveIMAP(imap_client_ob, id, title, mailbox_name)
-    if len(ob.cache.keys()) > 0:
+    if len(list(ob.cache.keys())) > 0:
         self._setObject(id, ob)
     if REQUEST:
         return self.manage_main(self, REQUEST, update_menu=1)

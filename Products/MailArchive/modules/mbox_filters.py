@@ -39,7 +39,7 @@ class mbox_filters:
     def __init__(self):
         file_path = join(Globals.package_home(globals()) ,BLACKWORDS)
         buf = open(file_path).readlines()
-        blackword_list = map(string.strip, buf)
+        blackword_list = list(map(string.strip, buf))
         self.blackword_pattern_list = self.compile_pattern_list([i for i in blackword_list if i != ''])
 
     def compile_pattern_list (self, string_list):
@@ -67,7 +67,7 @@ class mbox_filters:
             if match:
                return SPAM, "Subject matches %s in BLACKWORDS list" % (match.re.pattern)
             return UNSURE, "Message yields uncertainty"
-        except Exception,e:
+        except Exception as e:
             response_message = """The rule processor raised an exception.
                 Sometimes this is from a bad regular expression.\n"""
             return KEEP, response_message

@@ -32,9 +32,9 @@ from AccessControl import Unauthorized
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 #Product imports
-from MailArchive import addMailArchive, addMailArchiveIMAP
-from Utils import Utils
-from modules.imap_client import imap_client
+from .MailArchive import addMailArchive, addMailArchiveIMAP
+from .Utils import Utils
+from .modules.imap_client import imap_client
 
 logger = logging.getLogger('Products.MailArchive')
 
